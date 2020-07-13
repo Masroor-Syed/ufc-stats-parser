@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const fight_detail = require('./fight-detail-scrapper');
+const fighter_detail = require('./fighter-detail-scrapper');
 
 // let fighter = {
 //   name : "",
@@ -21,31 +21,17 @@ const fight_detail = require('./fight-detail-scrapper');
     defaultViewport: null
   });
 
-  const url = "http://www.ufcstats.com/fight-details/f8dd1e75978a3957";
+  const url = "http://ufcstats.com/fighter-details/029eaff01e6bb8f0";
 
   const page = await browser.newPage();
   await page.goto(url, {
     waitUntil : "networkidle2"
   });
+
+  await fighter_detail.setup(page);
+  let urls = await fighter_detail.getFightURLs(page);
+  console.log(urls);
+  await fighter_detail.extractDatafromFights(urls,page);
   
-  await fight_detail.setup(page);
-  const fstat = await fight_detail.getTotalFightStats(page);
-  const rsum = await fight_detail.getRoundSummary(page);
-  const fstrk = await fight_detail.getSigStrikes(page);
-  const rstrk = await fight_detail.getRoundStriking(page);
-  const fsum =  await fight_detail.getFightSummary(page);
-
-  console.log(fstat);
-  console.log("---");
-  console.log(rsum);
-  console.log("---");
-  console.log(fstrk);
-  console.log("---");
-  console.log(rstrk);
-  console.log("---");
-  console.log(fsum);
-
-
-
   browser.close();
 })();
